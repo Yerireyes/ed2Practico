@@ -550,4 +550,42 @@ public class ArbolMViasBusqueda<K extends Comparable<K>, V> implements IArbolBus
         }
         return false;
     }
+    
+    public boolean pregunta2(ArbolMViasBusqueda<K,V> arbolAComparar){
+       if (this.esArbolVacio() || arbolAComparar.esArbolVacio()){
+           return false;
+       }
+       Queue<NodoMVias<K,V>> colaDeNodos = new LinkedList<>();
+       colaDeNodos.offer(this.raiz);
+       Queue<NodoMVias<K,V>> colaDeNodosDeArbolAComparar = new LinkedList<>();
+       colaDeNodosDeArbolAComparar.offer(arbolAComparar.raiz);
+       while(!colaDeNodos.isEmpty()){
+           NodoMVias<K,V> nodoActual = colaDeNodos.poll();                                               // Mismo problema con lo de las colas
+           NodoMVias<K,V> nodoActualDelArbolAComparar = colaDeNodosDeArbolAComparar.poll();              // Mismo problema
+           if (nodoActual.cantidadDeClavesNoVacias() != nodoActualDelArbolAComparar.cantidadDeClavesNoVacias() || 
+                nodoActual.cantidadDeHijosNoVacios() != nodoActualDelArbolAComparar.cantidadDeHijosNoVacios()){
+               return false;
+           } 
+           for (int i = 0; i < nodoActual.cantidadDeClavesNoVacias() ;i++ ){
+               K claveActual = nodoActual.getClave(i);
+               K claveActualDelArbolAComparar = nodoActualDelArbolAComparar.getClave(i);
+               if (claveActual.compareTo(claveActualDelArbolAComparar) != 0){
+                   return false;
+               }
+               if (!nodoActual.esHijoVacio(i) && nodoActualDelArbolAComparar.esHijoVacio(i) || 
+                    nodoActual.esHijoVacio(i) && !nodoActualDelArbolAComparar.esHijoVacio(i)){
+                   return false;
+               } 
+               if (!nodoActual.esHijoVacio(i) && !nodoActualDelArbolAComparar.esHijoVacio(i)){
+                   colaDeNodos.offer(nodoActual.getHijo(i));
+                   colaDeNodosDeArbolAComparar.offer(nodoActualDelArbolAComparar.getHijo(i));
+               }
+           }
+            if (!nodoActual.esHijoVacio(orden - 1) && !nodoActualDelArbolAComparar.esHijoVacio(orden - 1)){
+                colaDeNodos.offer(nodoActual.getHijo(orden - 1));
+                colaDeNodosDeArbolAComparar.offer(nodoActualDelArbolAComparar.getHijo(orden - 1));
+            }
+       }
+       return true;
+   }
 }

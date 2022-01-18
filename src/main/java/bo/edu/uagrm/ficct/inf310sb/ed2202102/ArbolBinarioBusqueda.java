@@ -520,4 +520,34 @@ public class ArbolBinarioBusqueda<K extends Comparable<K>, V> implements IArbolB
         }
         return false;
     }
+    
+    public int pregunta3(int n){
+        int cantidadDeNodos = 0;
+        int nivelActual = 0;
+        if (this.esArbolVacio()){
+            return cantidadDeNodos;
+        }
+        NodoBinario<K,V> nodoActual = this.raiz;
+        Queue<NodoBinario<K,V>> colaDeNodos = new LinkedList<>();
+        colaDeNodos.offer(this.raiz);
+        int cantidadDeNodosEnUnNivel = colaDeNodos.size();
+        while(!colaDeNodos.isEmpty()){
+            nodoActual = colaDeNodos.poll(); // No recuerdo cual era el nombre para extraer de una cola
+            if (nivelActual >n){
+                cantidadDeNodos++;
+            } 
+            if (!nodoActual.esVacioHijoDerecho()){
+                colaDeNodos.offer(nodoActual.getHijoDerecho());
+            }
+            if (!nodoActual.esVacioHijoIzquierdo()){
+                colaDeNodos.offer(nodoActual.getHijoIzquierdo());
+            }
+            cantidadDeNodosEnUnNivel--;
+            if (cantidadDeNodosEnUnNivel==0){
+                cantidadDeNodosEnUnNivel = colaDeNodos.size();
+                nivelActual++;
+            } 
+        }
+        return cantidadDeNodos;
+    }
 }
